@@ -1,43 +1,57 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
+			character: [],
+			planet: [],
+			starships: [],
+			favourites: [],
+			films: [],
+			
 		},
+			
 		actions: {
 			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
+			
+			loadCharacter: () => {
+				fetch("https://swapi.dev/api/people")
+					.then((res) => res.json())
+					.then((res) => setStore ({ character: res.results}))
+					.catch((error) => console.error(error));
 			},
-			loadSomeData: () => {
-				/**
-					fetch().then().then(data => setStore({ "foo": data.bar }))
-				*/
+			loadPlanet: () => {
+				fetch("https://swapi.dev/api/planets")
+				.then((res) => res.json())
+				.then((res) => setStore ({ planet: res.results}))
+				.catch((error) => console.error(error));
 			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
+			loadStarship: () => {
+				fetch("https://swapi.dev/api/starships")
+				.then((res) => res.json())
+				.then((res) => setStore({ starships: res.results}))
+				.catch((error) => console.error(error));
+			},
+			loadFilms: () => {
+				fetch("https://swapi.dev/api/films")
+				.then((res) => res.json())
+				.then((res) => setStore({ films: res.results}))
+				.catch((error) => console.error(error));
+			},
+			
+			setFavourites: (fav) => {
+				setStore({favourites: [...getStore().favourites, fav]}) 
+			},
 
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
+			deleteFavourites: (index) => {
+				setStore({favourites: [...getStore().favourites.filter((fav, i) => index != i)]})
+				
+			},
 
-				//reset the global store
-				setStore({ demo: demo });
-			}
+
+
+
+			
+			
+
 		}
 	};
 };
